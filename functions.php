@@ -45,6 +45,7 @@ if ( ! function_exists( 'whc_hike_setup' ) ) :
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus( array(
 			'menu-1' => esc_html__( 'Primary', 'whc-hike' ),
+			'primary' => __( 'Primary Menu', 'whc-hike' ),
 		) );
 
 		/*
@@ -120,9 +121,15 @@ add_action( 'widgets_init', 'whc_hike_widgets_init' );
  * Enqueue scripts and styles.
  */
 function whc_hike_scripts() {
+	wp_enqueue_style('whc-bootstrap_css', get_template_directory_uri() . '/css/bootstrap.min.css');
+	
 	wp_enqueue_style( 'whc-hike-style', get_stylesheet_uri() );
 
 	wp_enqueue_script( 'whc-hike-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
+
+	wp_enqueue_script( 'jquery');
+
+	wp_enqueue_script( 'whc-bootstrap_js', get_template_directory_uri() . '/js/bootstrap.min.js', array('jquery'), '20170710', true );
 
 	wp_enqueue_script( 'whc-hike-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
 
@@ -131,6 +138,16 @@ function whc_hike_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'whc_hike_scripts' );
+
+require_once get_template_directory() . '/class-wp-bootstrap-navwalker.php';
+
+if ( ! file_exists( get_template_directory() . '/class-wp-bootstrap-navwalker.php' ) ) {
+	// file does not exist... return an error.
+	return new WP_Error( 'class-wp-bootstrap-navwalker-missing', __( 'It appears the class-wp-bootstrap-navwalker.php file may be missing.', 'wp-bootstrap-navwalker' ) );
+} else {
+	// file exists... require it.
+	require_once get_template_directory() . '/class-wp-bootstrap-navwalker.php';
+}
 
 /**
  * Implement the Custom Header feature.
